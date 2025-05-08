@@ -1,0 +1,58 @@
+export const coaches = [
+    {
+        id: 1,
+        name: 'Thomas',
+        sport: 'Boxe',
+        certified: true,
+        img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1000&auto=format&fit=crop',
+    },
+    {
+        id: 2,
+        name: 'Sophie',
+        sport: 'Tennis',
+        certified: true,
+        img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop',
+    },
+    {
+        id: 3,
+        name: 'Lucas',
+        sport: 'Fitness',
+        certified: true,
+        img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1000&auto=format&fit=crop',
+    },
+    {
+        id: 4,
+        name: 'Emma',
+        sport: 'Yoga',
+        certified: true,
+        img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000&auto=format&fit=crop',
+    },
+    {
+        id: 5,
+        name: 'Antoine',
+        sport: 'Basketball',
+        certified: true,
+        img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop',
+    },
+    {
+        id: 6,
+        name: 'Julie',
+        sport: 'Natation',
+        certified: true,
+        img: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1000&auto=format&fit=crop',
+    },
+    {
+        id: 7,
+        name: 'Nicolas',
+        sport: 'Football',
+        certified: true,
+        img: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=1000&auto=format&fit=crop',
+    },
+    {
+        id: 8,
+        name: 'Marie',
+        sport: 'Danse',
+        certified: true,
+        img: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1000&auto=format&fit=crop',
+    },
+]; 

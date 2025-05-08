@@ -1,10 +1,11 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 
-export default function notFound() {
+// Créer un compte
+export default function createAccount() {
     return (
         <View>
-            <Text>Page non trouvé !</Text>
+            <Text>createAccount</Text>
         </View>
     );
 }
