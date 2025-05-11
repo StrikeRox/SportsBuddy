@@ -5,4 +5,5 @@ export type Auth = {
     bio: string;
     birthdate: string;
     sports: string[];
+    photos: string[];
 };

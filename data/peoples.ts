@@ -7,7 +7,7 @@ export const peoples: Profil[] = [
         age: 28,
         isCertified: true,
         sports: ['Football'],
-        img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1000&auto=format&fit=crop'],
     },
     {
         id: 2,
@@ -15,7 +15,7 @@ export const peoples: Profil[] = [
         age: 25,
         isCertified: false,
         sports: ['Yoga', 'Running', 'Natation'],
-        img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop'],
     },
     {
         id: 3,
@@ -23,7 +23,7 @@ export const peoples: Profil[] = [
         age: 31,
         isCertified: true,
         sports: ['Basketball'],
-        img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1000&auto=format&fit=crop'],
     },
     {
         id: 4,
@@ -31,7 +31,7 @@ export const peoples: Profil[] = [
         age: 27,
         isCertified: false,
         sports: ['Danse', 'Pilates'],
-        img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000&auto=format&fit=crop'],
     },
     {
         id: 5,
@@ -39,7 +39,7 @@ export const peoples: Profil[] = [
         age: 33,
         isCertified: true,
         sports: [],
-        img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1000&auto=format&fit=crop'],
     },
     {
         id: 6,
@@ -47,7 +47,7 @@ export const peoples: Profil[] = [
         age: 26,
         isCertified: false,
         sports: ['Volleyball', 'Escalade'],
-        img: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1000&auto=format&fit=crop'],
     },
     {
         id: 7,
@@ -55,7 +55,7 @@ export const peoples: Profil[] = [
         age: 30,
         isCertified: true,
         sports: ['Cyclisme'],
-        img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop'],
     },
     {
         id: 8,
@@ -63,7 +63,7 @@ export const peoples: Profil[] = [
         age: 24,
         isCertified: false,
         sports: ['Gymnastique', 'Athlétisme', 'Yoga'],
-        img: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=1000&auto=format&fit=crop'],
     },
     {
         id: 9,
@@ -71,7 +71,7 @@ export const peoples: Profil[] = [
         age: 32,
         isCertified: true,
         sports: ['Boxe'],
-        img: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=1000&auto=format&fit=crop'],
     },
     {
         id: 10,
@@ -79,7 +79,7 @@ export const peoples: Profil[] = [
         age: 29,
         isCertified: false,
         sports: ['Surf', 'Paddle'],
-        img: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1000&auto=format&fit=crop'],
     },
     {
         id: 11,
@@ -87,7 +87,7 @@ export const peoples: Profil[] = [
         age: 34,
         isCertified: true,
         sports: [],
-        img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000&auto=format&fit=crop'],
     },
     {
         id: 12,
@@ -95,7 +95,7 @@ export const peoples: Profil[] = [
         age: 28,
         isCertified: false,
         sports: ['Équitation'],
-        img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1000&auto=format&fit=crop'],
     },
     {
         id: 13,
@@ -103,7 +103,7 @@ export const peoples: Profil[] = [
         age: 31,
         isCertified: true,
         sports: ['Ski', 'Snowboard'],
-        img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1000&auto=format&fit=crop'],
     },
     {
         id: 14,
@@ -111,7 +111,7 @@ export const peoples: Profil[] = [
         age: 27,
         isCertified: false,
         sports: ['Handball'],
-        img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop'],
     },
     {
         id: 15,
@@ -119,6 +119,6 @@ export const peoples: Profil[] = [
         age: 29,
         isCertified: true,
         sports: ['Musculation', 'CrossFit', 'Course'],
-        img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1000&auto=format&fit=crop',
+        photos: ['https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1000&auto=format&fit=crop'],
     }
 ];

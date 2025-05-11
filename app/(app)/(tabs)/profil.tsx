@@ -1,5 +1,4 @@
 import { colors } from '@/constants/color';
-import { peoples } from '@/data/peoples';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -83,7 +82,7 @@ export default function profil() {
                             {/* Photo de profil en cercle */}
                             <View style={styles.profileImageBorder}>
                                 <Image
-                                    source={{ uri: peoples[0]?.img }} // TODO: Change to auth.img
+                                    source={{ uri: auth?.photos[0] }}
                                     style={styles.profileImage}
                                 />
                             </View>

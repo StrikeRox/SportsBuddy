@@ -113,7 +113,7 @@ export default function SignInScreen() {
                                 color={colors.primary}
                             />
                         </View>
-                        <Text style={styles.title}>Yanapp</Text>
+                        <Text style={styles.title}>SportBuddy</Text>
                         <Text style={styles.subtitle}>Trouvez votre partenaire sportif</Text>
                     </View>
 

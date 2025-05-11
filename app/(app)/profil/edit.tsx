@@ -1,9 +1,10 @@
 import { colors } from '@/constants/color';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const SPORTS_LIST = [
   'Boxe', 'Tennis', 'Basket', 'Football', 'Yoga', 'Running', 'Natation', 'Danse', 'Pilates',
@@ -19,6 +20,7 @@ export default function Edit() {
     const [bio, setBio] = useState(auth?.bio || '');
     const [sports, setSports] = useState<string[]>(auth?.sports || []);
     const [error, setError] = useState('');
+    const [photos, setPhotos] = useState<string[]>(auth?.photos || []);
 
     const toggleSport = (sport: string) => {
         if (sports.includes(sport)) {
@@ -33,26 +35,50 @@ export default function Edit() {
     };
 
     const handleSave = () => {
+        // Mettre à jour l'utilisateur avec les nouvelles photos
+        // ... votre logique de sauvegarde
         router.back();
+    };
+
+    const pickImage = async () => {
+        if (photos.length >= 6) {
+            setError('Vous ne pouvez pas ajouter plus de 6 photos');
+            return;
+        }
+
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0.8,
+        });
+
+        if (!result.canceled) {
+            setPhotos(prev => [...prev, result.assets[0].uri]);
+        }
+    };
+
+    const removePhoto = (index: number) => {
+        setPhotos(prev => prev.filter((_, i) => i !== index));
     };
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <View style={styles.headerContent}>
-                    <TouchableOpacity
-                        onPress={() => router.back()}
-                        style={styles.backButton}
-                    >
-                        <Ionicons name="arrow-back" size={24} color="white" />
-                    </TouchableOpacity>
-                    <Text style={styles.headerTitle}>
-                        Modifier mon profil
-                    </Text>
-                </View>
-            </View>
-
             <ScrollView style={styles.scrollView}>
+                <View style={styles.header}>
+                    <View style={styles.headerContent}>
+                        <TouchableOpacity
+                            onPress={() => router.back()}
+                            style={styles.backButton}
+                        >
+                            <Ionicons name="arrow-back" size={24} color="white" />
+                        </TouchableOpacity>
+                        <Text style={styles.headerTitle}>
+                            Modifier mon profil
+                        </Text>
+                    </View>
+                </View>
+
                 <View style={styles.card}>
                     <View style={styles.sectionHeader}>
                         <View style={styles.iconContainer}>
@@ -122,6 +148,42 @@ export default function Edit() {
                         ))}
                     </View>
 
+                    <View style={styles.sectionHeader}>
+                        <View style={styles.iconContainer}>
+                            <Ionicons
+                                name="images-outline"
+                                size={28}
+                                color={colors.primary}
+                            />
+                        </View>
+                        <Text style={styles.sectionTitle}>
+                            Photos de profil
+                        </Text>
+                    </View>
+
+                    <View style={styles.photosContainer}>
+                        {photos.map((photo, index) => (
+                            <View key={index} style={styles.photoWrapper}>
+                                <Image source={{ uri: photo }} style={styles.photo} />
+                                <TouchableOpacity 
+                                    style={styles.removePhotoButton}
+                                    onPress={() => removePhoto(index)}
+                                >
+                                    <Ionicons name="close-circle" size={24} color="white" />
+                                </TouchableOpacity>
+                            </View>
+                        ))}
+                        {photos.length < 6 && (
+                            <TouchableOpacity 
+                                style={styles.addPhotoButton}
+                                onPress={pickImage}
+                            >
+                                <Ionicons name="add" size={32} color={colors.primary} />
+                                <Text style={styles.addPhotoText}>Ajouter</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+
                     <TouchableOpacity
                         style={styles.saveButton}
                         onPress={handleSave}
@@ -141,12 +203,16 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f3f4f6',
     },
+    scrollView: {
+        flex: 1,
+    },
     header: {
         height: 176,
         paddingTop: 48,
         borderBottomLeftRadius: 24,
         borderBottomRightRadius: 24,
         backgroundColor: colors.primary,
+        marginBottom: -48,
     },
     headerContent: {
         flexDirection: 'row',
@@ -166,11 +232,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontFamily: 'Onest',
     },
-    scrollView: {
-        flex: 1,
-        paddingHorizontal: 16,
-        marginTop: -48,
-    },
     card: {
         backgroundColor: 'white',
         borderRadius: 24,
@@ -180,6 +241,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 3,
+        marginHorizontal: 16,
         marginBottom: 24,
     },
     sectionHeader: {
@@ -267,6 +329,45 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
         fontWeight: 'bold',
+        fontFamily: 'Onest',
+    },
+    photosContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 12,
+        marginBottom: 24,
+    },
+    photoWrapper: {
+        width: (Dimensions.get('window').width - 80) / 3,
+        aspectRatio: 1,
+        position: 'relative',
+    },
+    photo: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 12,
+    },
+    removePhotoButton: {
+        position: 'absolute',
+        top: -8,
+        right: -8,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        borderRadius: 12,
+    },
+    addPhotoButton: {
+        width: (Dimensions.get('window').width - 80) / 3,
+        aspectRatio: 1,
+        borderWidth: 2,
+        borderColor: colors.primary,
+        borderStyle: 'dashed',
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: `${colors.primary}1A`,
+    },
+    addPhotoText: {
+        color: colors.primary,
+        marginTop: 4,
         fontFamily: 'Onest',
     },
 });

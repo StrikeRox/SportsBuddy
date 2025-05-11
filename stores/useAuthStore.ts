@@ -23,6 +23,7 @@ export const useAuthStore = create<UserStore>(set => ({
                 bio: "J'adore la boxe et casser des culs, je travaille au McDo, c'est trop bien je kiffe ma vie.",
                 birthdate: '1995-05-27',
                 sports: ['Boxe', 'Tennis', 'Basket'],
+                photos: ['https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1000&auto=format&fit=crop'],
             };
 
             set(() => ({ auth: user }));

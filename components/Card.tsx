@@ -1,73 +1,90 @@
 import { colors } from '@/constants/color';
 import { Profil } from '@/types/Profil';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Animated, ImageBackground, StyleSheet, Text, View } from 'react-native';
 import ChoiceText from './ChoiceText';
 
 type CardProps = {
     person: Profil;
-    position: number;
     isFirst: boolean;
     swipe: Animated.ValueXY;
 };
 
 export default function Card({
     person,
-    position,
     isFirst,
     swipe,
     ...rest
 }: CardProps) {
-    const rotate = swipe.x.interpolate({
-        inputRange: [-100, 0, 100],
-        outputRange: ['-8deg', '0deg', '8deg'],
-    });
+    if (!swipe) return null;
 
-    const animatedCardStyle = {
-        transform: [...swipe.getTranslateTransform(), { rotate }],
-    };
+    const animations = useMemo(() => {
+        const rotate = swipe.x.interpolate({
+            inputRange: [-100, 0, 100],
+            outputRange: ['-8deg', '0deg', '8deg'],
+        });
 
-    const likeOpacity = swipe.x.interpolate({
-        inputRange: [25, 100],
-        outputRange: [0, 1],
-        extrapolate: 'clamp',
-    });
+        const likeOpacity = swipe.x.interpolate({
+            inputRange: [25, 100],
+            outputRange: [0, 1],
+            extrapolate: 'clamp',
+        });
 
-    const noneOpacity = swipe.x.interpolate({
-        inputRange: [-100, -25],
-        outputRange: [1, 0],
-        extrapolate: 'clamp',
-    });
+        const noneOpacity = swipe.x.interpolate({
+            inputRange: [-100, -25],
+            outputRange: [1, 0],
+            extrapolate: 'clamp',
+        });
+
+        const animatedCardStyle = {
+            transform: [...swipe.getTranslateTransform(), { rotate }],
+        };
+
+        return {
+            rotate,
+            likeOpacity,
+            noneOpacity,
+            animatedCardStyle
+        };
+    }, [swipe]);
 
     const renderChoice = useCallback(() => {
         return (
             <>
                 <Animated.View
-                    style={[styles.choiceContainer, styles.likeChoice, { opacity: likeOpacity }]}
+                    style={[
+                        styles.choiceContainer,
+                        styles.likeChoice,
+                        { opacity: animations.likeOpacity }
+                    ]}
                 >
                     <ChoiceText type="like" />
                 </Animated.View>
                 <Animated.View
-                    style={[styles.choiceContainer, styles.noneChoice, { opacity: noneOpacity }]}
+                    style={[
+                        styles.choiceContainer,
+                        styles.noneChoice,
+                        { opacity: animations.noneOpacity }
+                    ]}
                 >
                     <ChoiceText type="none" />
                 </Animated.View>
             </>
         );
-    }, []);
+    }, [animations]);
 
     return (
         <Animated.View
             style={[
                 styles.card,
-                isFirst && animatedCardStyle,
+                isFirst && animations.animatedCardStyle,
                 styles.cardShadow
             ]}
             {...rest}
         >
             <ImageBackground
-                source={{ uri: person.img }}
+                source={{ uri: person.photos[0] }}
                 style={styles.backgroundImage}
                 resizeMode="cover"
             >

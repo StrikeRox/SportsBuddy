@@ -1,13 +1,17 @@
 import Card from '@/components/Card';
 import { colors } from '@/constants/color';
 import { peoples } from '@/data/peoples';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { useMatchStore } from '@/stores/useMatchStores';
 import { Profil } from '@/types/Profil';
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     ActivityIndicator,
     Animated,
     Dimensions,
+    Image,
     PanResponder,
     SafeAreaView,
     StyleSheet,
@@ -22,6 +26,8 @@ export default function Index() {
     const [isLoading, setIsLoading] = useState(true);
     const [persons, setPersons] = useState<Profil[]>(peoples);
     const [lastProfil, setLastProfil] = useState<[Profil, string]>();
+    const matchStore = useMatchStore();
+    const { auth } = useAuthStore();
 
     useEffect(() => {
         setTimeout(() => {
@@ -33,6 +39,7 @@ export default function Index() {
         if (persons.length === 0) {
             setIsLoading(true);
             setPersons(peoples);
+            swipeValues.current = peoples.map(() => new Animated.ValueXY());
             setTimeout(() => {
                 setIsLoading(false);
             }, 2000);
@@ -40,16 +47,25 @@ export default function Index() {
     }, [persons]);
 
     const swipeValues = useRef(
-        persons.map(() => new Animated.ValueXY()),
-    ).current;
+        persons.map(() => new Animated.ValueXY())
+    );
 
     const removeTopCard = useCallback(() => {
         setPersons(prev => {
+            if (prev.length === 0) return prev; 
+            
+            if (Number(JSON.stringify(swipeValues.current[0].x)) >= 0 && matchStore.listLikes.includes(prev[0].id)) {
+                matchStore.addMatch(prev[0]);
+                animateMatch(prev[0]);
+            }
+                      
             setLastProfil([
                 prev[0],
-                Number(JSON.stringify(swipeValues[0].x)) > 0 ? 'like' : 'none',
+                Number(JSON.stringify(swipeValues.current[0].x)) >= 0 ? 'like' : 'none',
             ]);
-            swipeValues.shift();
+            
+            swipeValues.current = swipeValues.current.slice(1);
+            
             return prev.slice(1);
         });
     }, []);
@@ -63,8 +79,7 @@ export default function Index() {
             });
 
             setPersons(prevPersons => [newPerson, ...prevPersons]);
-
-            swipeValues.unshift(newPersonPosition);
+            swipeValues.current = [newPersonPosition, ...swipeValues.current];
 
             Animated.spring(newPersonPosition, {
                 toValue: { x: 0, y: 0 },
@@ -77,14 +92,14 @@ export default function Index() {
     const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onPanResponderMove: (_, { dx, dy }) => {
-            swipeValues[0]?.setValue({ x: dx, y: dy });
+            swipeValues.current[0]?.setValue({ x: dx, y: dy });
         },
         onPanResponderRelease: (_, { dx }) => {
             const direction = Math.sign(dx);
             const isSwiped = Math.abs(dx) > 150;
 
             if (isSwiped) {
-                Animated.timing(swipeValues[0], {
+                Animated.timing(swipeValues.current[0], {
                     toValue: {
                         x: direction * SCREEN_WIDTH * 1.5,
                         y: 0,
@@ -93,7 +108,7 @@ export default function Index() {
                     useNativeDriver: true,
                 }).start(removeTopCard);
             } else {
-                Animated.spring(swipeValues[0], {
+                Animated.spring(swipeValues.current[0], {
                     toValue: { x: 0, y: 0 },
                     useNativeDriver: true,
                 }).start();
@@ -103,17 +118,46 @@ export default function Index() {
 
     const handleChoice = useCallback(
         (direction: 'like' | 'none') => {
-            Animated.timing(swipeValues[0].x, {
+            if (!swipeValues.current[0]) return;
+
+            Animated.timing(swipeValues.current[0], {
                 toValue:
                     direction === 'like'
-                        ? SCREEN_WIDTH * 1.5
-                        : -SCREEN_WIDTH * 1.5,
+                        ? { x: SCREEN_WIDTH * 1.5, y: 0 }
+                        : { x: -SCREEN_WIDTH * 1.5, y: 0 },
                 duration: 400,
                 useNativeDriver: true,
             }).start(removeTopCard);
         },
-        [removeTopCard, swipeValues[0].x],
+        [removeTopCard, swipeValues]
     );
+
+    const [showMatch, setShowMatch] = useState(false);
+    const [matchedPerson, setMatchedPerson] = useState<Profil | null>(null);
+    const matchAnimation = useRef(new Animated.Value(0)).current;
+
+    const animateMatch = useCallback((person: Profil) => {
+        setMatchedPerson(person);
+        setShowMatch(true);
+        
+        Animated.sequence([
+            Animated.spring(matchAnimation, {
+                toValue: 1,
+                useNativeDriver: true,
+                tension: 50,
+                friction: 7
+            }),
+            Animated.delay(2000),
+            Animated.timing(matchAnimation, {
+                toValue: 0,
+                duration: 300,
+                useNativeDriver: true
+            })
+        ]).start(() => {
+            setShowMatch(false);
+            setMatchedPerson(null);
+        });
+    }, []);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -124,7 +168,7 @@ export default function Index() {
                 </View>
             )}
             <View style={styles.cardContainer}>
-                {[...persons]
+                {persons.length > 0 && [...persons]
                     .map((person, index) => {
                         const isFirst = index === 0;
                         const dragHandlers = isFirst
@@ -133,11 +177,10 @@ export default function Index() {
 
                         return (
                             <Card
-                                key={person.name}
+                                key={person.id}
                                 person={person}
-                                position={index}
                                 isFirst={isFirst}
-                                swipe={swipeValues[index]}
+                                swipe={swipeValues.current[index]}
                                 {...dragHandlers}
                             />
                         );
@@ -175,6 +218,58 @@ export default function Index() {
                     </TouchableOpacity>
                 </View>
             </View>
+            {showMatch && (
+                <Animated.View style={[styles.matchOverlay, {
+                    opacity: matchAnimation
+                }]}>
+                    <Animated.View style={[styles.matchContent, {
+                        transform: [{
+                            scale: matchAnimation.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [0.8, 1]
+                            })
+                        }]
+                    }]}>
+                        <View style={styles.matchImagesContainer}>
+                            <Image 
+                                source={{ uri: auth?.photos[0] }}
+                                style={styles.matchImage}
+                            />
+                            <View style={styles.matchIconContainer}>
+                                <Ionicons name="heart" size={40} color={colors.love} />
+                            </View>
+                            <Image 
+                                source={{ uri: matchedPerson?.photos[0] }}
+                                style={styles.matchImage}
+                            />
+                        </View>
+                        <Text style={styles.matchText}>
+                            C'est un match !
+                        </Text>
+                        <Text style={styles.matchSubtext}>
+                            {auth?.firstname} et {matchedPerson?.name} vous êtes connectés
+                        </Text>
+                        <TouchableOpacity style={styles.matchButton} onPress={() => {
+                            router.push({
+                                pathname: '/conversations',
+                                params: { 
+                                    id: matchedPerson?.id,
+                                    name: matchedPerson?.name,
+                                    avatar: matchedPerson?.photos[0]
+                                }
+                            });
+                        }}>
+                            <Text style={styles.matchButtonText}>Envoyer un message</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity 
+                            style={styles.closeButton}
+                            onPress={() => setShowMatch(false)}
+                        >
+                            <Ionicons name="close" size={24} color="white" />
+                        </TouchableOpacity>
+                    </Animated.View>
+                </Animated.View>
+            )}
         </SafeAreaView>
     );
 }
@@ -211,5 +306,62 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 9999,
         padding: 16,
+    },
+    matchOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 999,
+    },
+    matchContent: {
+        alignItems: 'center',
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 30,
+        width: '80%',
+    },
+    matchImagesContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    matchImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+    },
+    matchIconContainer: {
+        marginHorizontal: 20,
+    },
+    matchText: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: colors.primary,
+        marginBottom: 10,
+        fontFamily: 'Onest',
+    },
+    matchSubtext: {
+        fontSize: 16,
+        color: '#666',
+        textAlign: 'center',
+        fontFamily: 'Onest',
+        marginBottom: 20,
+    },
+    matchButton: {
+        backgroundColor: colors.primary,
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 25,
+    },
+    matchButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
     },
 });

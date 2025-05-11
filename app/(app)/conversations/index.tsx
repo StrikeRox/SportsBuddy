@@ -322,7 +322,6 @@ const styles = StyleSheet.create({
     },
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
     },
     menuContainer: {
         position: 'absolute',
