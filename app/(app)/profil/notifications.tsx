@@ -5,7 +5,6 @@ import React, { useState } from 'react';
 import {
     Alert,
     ScrollView,
-    StatusBar,
     StyleSheet,
     Switch,
     Text,
@@ -131,7 +130,6 @@ export default function Notifications() {
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="light-content" />
             {/* En-tête personnalisé */}
             <View style={styles.header}>
                 <View style={styles.headerContent}>

@@ -5,4 +5,5 @@ export type Profil = {
     isCertified: boolean;
     sports: string[];
     photos: string[];
+    gender: string;
 };

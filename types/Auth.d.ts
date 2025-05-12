@@ -6,4 +6,5 @@ export type Auth = {
     birthdate: string;
     sports: string[];
     photos: string[];
+    showGender: string;
 };

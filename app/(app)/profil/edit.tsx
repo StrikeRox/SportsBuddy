@@ -1,5 +1,6 @@
 import { colors } from '@/constants/color';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { Auth } from '@/types/Auth';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
@@ -7,20 +8,22 @@ import React, { useState } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const SPORTS_LIST = [
-  'Boxe', 'Tennis', 'Basket', 'Football', 'Yoga', 'Running', 'Natation', 'Danse', 'Pilates',
-  'Volleyball', 'Escalade', 'Cyclisme', 'Gymnastique', 'Athlétisme', 'Surf', 'Paddle',
-  'Équitation', 'Ski', 'Snowboard', 'Handball', 'Musculation', 'CrossFit', 'Course'
+    'arc', 'atletisme', 'badminton', 'baseball', 'basket', 'bowling', 'boxe', 'course', 'crossfit', 
+    'danse', 'equitation', 'escrime', 'football', 'golf', 'gymnastique', 'judo', 'karate', 
+    'lutte', 'moto', 'musculation', 'paddle', 'paintball', 'peche', 'pilate', 'pingpong', 
+    'rugby', 'skateboard', 'ski', 'surf', 'tennis', 'voile', 'volley', 'yoga'
 ];
 
 export default function Edit() {
-    const { auth } = useAuthStore();
+    const { auth, updateAuth } = useAuthStore();
 
     const [firstname, setFirstname] = useState(auth?.firstname || '');
     const [birthdate, setBirthdate] = useState(auth?.birthdate || '');
     const [bio, setBio] = useState(auth?.bio || '');
     const [sports, setSports] = useState<string[]>(auth?.sports || []);
-    const [error, setError] = useState('');
     const [photos, setPhotos] = useState<string[]>(auth?.photos || []);
+    const [showGender, setShowGender] = useState(auth?.showGender || 'all');
+    const [error, setError] = useState('');
 
     const toggleSport = (sport: string) => {
         if (sports.includes(sport)) {
@@ -35,8 +38,18 @@ export default function Edit() {
     };
 
     const handleSave = () => {
-        // Mettre à jour l'utilisateur avec les nouvelles photos
-        // ... votre logique de sauvegarde
+        if (!auth) return; // Vérification de sécurité
+        
+        updateAuth({
+            ...auth,
+            firstname,
+            birthdate,
+            bio,
+            sports,
+            photos,
+            showGender,
+        } as Auth);
+
         router.back();
     };
 
@@ -118,6 +131,33 @@ export default function Edit() {
                         multiline
                     />
 
+                    <Text style={styles.label}>Genre</Text>
+                    <View style={styles.radioContainer}>
+                        <TouchableOpacity 
+                            style={[styles.radioButton, showGender === 'male' && styles.radioButtonSelected]} 
+                            onPress={() => setShowGender('male')}
+                        >
+                            <View style={[styles.radioCircle, showGender === 'male' && styles.radioCircleSelected]} />
+                            <Text style={styles.radioText}>Homme</Text>
+                        </TouchableOpacity>
+                        
+                        <TouchableOpacity 
+                            style={[styles.radioButton, showGender === 'female' && styles.radioButtonSelected]} 
+                            onPress={() => setShowGender('female')}
+                        >
+                            <View style={[styles.radioCircle, showGender === 'female' && styles.radioCircleSelected]} />
+                            <Text style={styles.radioText}>Femme</Text>
+                        </TouchableOpacity>
+                        
+                        <TouchableOpacity 
+                            style={[styles.radioButton, showGender === 'all' && styles.radioButtonSelected]} 
+                            onPress={() => setShowGender('all')}
+                        >
+                            <View style={[styles.radioCircle, showGender === 'all' && styles.radioCircleSelected]} />
+                            <Text style={styles.radioText}>Tous</Text>
+                        </TouchableOpacity>
+                    </View>
+
                     <Text style={[styles.label, styles.sportsLabel]}>Sports pratiqués</Text>
                     {error ? (
                         <Text style={styles.errorText}>{error}</Text>
@@ -164,8 +204,8 @@ export default function Edit() {
                     <View style={styles.photosContainer}>
                         {photos.map((photo, index) => (
                             <View key={index} style={styles.photoWrapper}>
-                                <Image source={{ uri: photo }} style={styles.photo} />
-                                <TouchableOpacity 
+                                <Image source={{uri: photo}} style={styles.photo} />
+                                <TouchableOpacity
                                     style={styles.removePhotoButton}
                                     onPress={() => removePhoto(index)}
                                 >
@@ -369,5 +409,32 @@ const styles = StyleSheet.create({
         color: colors.primary,
         marginTop: 4,
         fontFamily: 'Onest',
+    },
+    radioContainer: {
+        flexDirection: 'row',
+        gap: 16,
+        marginBottom: 16,
+    },
+    radioButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+    radioButtonSelected: {
+        opacity: 1,
+    },
+    radioCircle: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: colors.primary,
+    },
+    radioCircleSelected: {
+        backgroundColor: colors.primary,
+    },
+    radioText: {
+        fontFamily: 'Onest',
+        color: '#4B5563',
     },
 });

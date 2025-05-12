@@ -23,12 +23,15 @@ import {
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function Index() {
+    const { auth } = useAuthStore();
     const [isLoading, setIsLoading] = useState(true);
-    const [persons, setPersons] = useState<Profil[]>(peoples);
+    const [persons, setPersons] = useState<Profil[]>(auth?.showGender === 'all' ? peoples : peoples.filter(person => person.gender === auth?.showGender));
     const [lastProfil, setLastProfil] = useState<[Profil, string]>();
     const matchStore = useMatchStore();
-    const { auth } = useAuthStore();
-
+    const [swipe, setSwipe] = useState<string | null>(null);
+    const [disabled, setDisabled] = useState(false);
+    const [isSwiping, setIsSwiping] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(false);
@@ -36,10 +39,28 @@ export default function Index() {
     }, []);
 
     useEffect(() => {
+        if (swipe === 'like' && matchStore.listLikes.includes(persons[0].id)) {
+            setTimeout(() => {
+                matchStore.addMatch(persons[0]);
+                animateMatch(persons[0]);
+            }, 500);
+        }
+        setSwipe(null);
+    }, [swipe]);
+
+    useEffect(() => {
+        if (auth?.showGender !== 'all') {
+            const filteredPeople = peoples.filter(person => person.gender === auth?.showGender);
+            setPersons(filteredPeople.length > 0 ? filteredPeople : peoples.slice(0, 15));
+        }
+    }, [auth?.showGender]);
+
+    useEffect(() => {
         if (persons.length === 0) {
             setIsLoading(true);
-            setPersons(peoples);
-            swipeValues.current = peoples.map(() => new Animated.ValueXY());
+            const filteredPeople = peoples.filter(person => person.gender === auth?.showGender);
+            setPersons(filteredPeople.length > 0 ? filteredPeople : peoples.slice(0, 15));
+            swipeValues.current = filteredPeople.map(() => new Animated.ValueXY());
             setTimeout(() => {
                 setIsLoading(false);
             }, 2000);
@@ -50,25 +71,19 @@ export default function Index() {
         persons.map(() => new Animated.ValueXY())
     );
 
-    const removeTopCard = useCallback(() => {
+    const removeTopCard = useCallback(() => {        
         setPersons(prev => {
             if (prev.length === 0) return prev; 
-            
-            if (Number(JSON.stringify(swipeValues.current[0].x)) >= 0 && matchStore.listLikes.includes(prev[0].id)) {
-                matchStore.addMatch(prev[0]);
-                animateMatch(prev[0]);
-            }
-                      
+
             setLastProfil([
                 prev[0],
-                Number(JSON.stringify(swipeValues.current[0].x)) >= 0 ? 'like' : 'none',
+                swipe || 'none',
             ]);
-            
             swipeValues.current = swipeValues.current.slice(1);
             
             return prev.slice(1);
         });
-    }, []);
+    }, [swipe]);
 
     const backPerson = () => {
         if (lastProfil) {
@@ -93,12 +108,20 @@ export default function Index() {
         onStartShouldSetPanResponder: () => true,
         onPanResponderMove: (_, { dx, dy }) => {
             swipeValues.current[0]?.setValue({ x: dx, y: dy });
+            setIsSwiping(dx !== 0);
         },
         onPanResponderRelease: (_, { dx }) => {
+            setIsSwiping(false);
             const direction = Math.sign(dx);
             const isSwiped = Math.abs(dx) > 150;
 
             if (isSwiped) {
+                if (direction > 0) {
+                    setSwipe('like');
+                } else {
+                    setSwipe('none');
+                }
+                
                 Animated.timing(swipeValues.current[0], {
                     toValue: {
                         x: direction * SCREEN_WIDTH * 1.5,
@@ -118,18 +141,23 @@ export default function Index() {
 
     const handleChoice = useCallback(
         (direction: 'like' | 'none') => {
-            if (!swipeValues.current[0]) return;
-
-            Animated.timing(swipeValues.current[0], {
+            if (isProcessing || isSwiping) return;
+            setIsProcessing(true);
+            setSwipe(direction);
+            
+            Animated.timing(swipeValues.current[0].x, {
                 toValue:
                     direction === 'like'
-                        ? { x: SCREEN_WIDTH * 1.5, y: 0 }
-                        : { x: -SCREEN_WIDTH * 1.5, y: 0 },
+                        ? SCREEN_WIDTH * 1.5
+                        : -SCREEN_WIDTH * 1.5,
                 duration: 400,
                 useNativeDriver: true,
-            }).start(removeTopCard);
+            }).start(() => {
+                removeTopCard();
+                setIsProcessing(false);
+            });
         },
-        [removeTopCard, swipeValues]
+        [removeTopCard, isSwiping, isProcessing]
     );
 
     const [showMatch, setShowMatch] = useState(false);
@@ -191,6 +219,7 @@ export default function Index() {
                 <View>
                     <TouchableOpacity
                         style={styles.button}
+                        disabled={isSwiping || isProcessing}
                         onPress={() => handleChoice('none')}
                     >
                         <Ionicons name="close" size={40} color={colors.none} />
@@ -200,12 +229,12 @@ export default function Index() {
                     <TouchableOpacity
                         style={styles.button}
                         onPress={backPerson}
-                        disabled={!lastProfil}
+                        disabled={!lastProfil || isSwiping || isProcessing}
                     >
                         <Ionicons
                             name="reload"
                             size={40}
-                            color={colors.return}
+                            color={lastProfil ? colors.return : '#ccc'}
                         />
                     </TouchableOpacity>
                 </View>
@@ -213,6 +242,7 @@ export default function Index() {
                     <TouchableOpacity
                         style={styles.button}
                         onPress={() => handleChoice('like')}
+                        disabled={isSwiping || isProcessing}
                     >
                         <Ionicons name="heart" size={40} color={colors.love} />
                     </TouchableOpacity>

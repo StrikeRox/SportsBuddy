@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
         height: 180,
     },
     infoContainer: {
+        width: '100%',
         position: 'absolute',
         bottom: 0,
         padding: 16,
@@ -171,7 +172,6 @@ const styles = StyleSheet.create({
     nameAgeContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
         marginBottom: 8,
         gap: 8,
     },

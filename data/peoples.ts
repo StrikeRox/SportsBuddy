@@ -8,6 +8,7 @@ export const peoples: Profil[] = [
         isCertified: true,
         sports: ['Football'],
         photos: ['https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'male',
     },
     {
         id: 2,
@@ -16,6 +17,7 @@ export const peoples: Profil[] = [
         isCertified: false,
         sports: ['Yoga', 'Running', 'Natation'],
         photos: ['https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'female',
     },
     {
         id: 3,
@@ -24,6 +26,7 @@ export const peoples: Profil[] = [
         isCertified: true,
         sports: ['Basketball'],
         photos: ['https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'male',
     },
     {
         id: 4,
@@ -32,6 +35,7 @@ export const peoples: Profil[] = [
         isCertified: false,
         sports: ['Danse', 'Pilates'],
         photos: ['https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'female',
     },
     {
         id: 5,
@@ -40,6 +44,7 @@ export const peoples: Profil[] = [
         isCertified: true,
         sports: [],
         photos: ['https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'male',
     },
     {
         id: 6,
@@ -48,6 +53,7 @@ export const peoples: Profil[] = [
         isCertified: false,
         sports: ['Volleyball', 'Escalade'],
         photos: ['https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'female',
     },
     {
         id: 7,
@@ -56,6 +62,7 @@ export const peoples: Profil[] = [
         isCertified: true,
         sports: ['Cyclisme'],
         photos: ['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'male',
     },
     {
         id: 8,
@@ -64,6 +71,7 @@ export const peoples: Profil[] = [
         isCertified: false,
         sports: ['Gymnastique', 'Athlétisme', 'Yoga'],
         photos: ['https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'female',
     },
     {
         id: 9,
@@ -72,6 +80,7 @@ export const peoples: Profil[] = [
         isCertified: true,
         sports: ['Boxe'],
         photos: ['https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'male',
     },
     {
         id: 10,
@@ -80,6 +89,7 @@ export const peoples: Profil[] = [
         isCertified: false,
         sports: ['Surf', 'Paddle'],
         photos: ['https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'female',
     },
     {
         id: 11,
@@ -88,6 +98,7 @@ export const peoples: Profil[] = [
         isCertified: true,
         sports: [],
         photos: ['https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'male',
     },
     {
         id: 12,
@@ -96,6 +107,7 @@ export const peoples: Profil[] = [
         isCertified: false,
         sports: ['Équitation'],
         photos: ['https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'female',
     },
     {
         id: 13,
@@ -104,6 +116,7 @@ export const peoples: Profil[] = [
         isCertified: true,
         sports: ['Ski', 'Snowboard'],
         photos: ['https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'male',
     },
     {
         id: 14,
@@ -112,6 +125,7 @@ export const peoples: Profil[] = [
         isCertified: false,
         sports: ['Handball'],
         photos: ['https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'female',
     },
     {
         id: 15,
@@ -120,5 +134,6 @@ export const peoples: Profil[] = [
         isCertified: true,
         sports: ['Musculation', 'CrossFit', 'Course'],
         photos: ['https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1000&auto=format&fit=crop'],
+        gender: 'male',
     }
 ];

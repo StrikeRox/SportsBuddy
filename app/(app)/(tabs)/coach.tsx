@@ -1,16 +1,16 @@
 import { colors } from '@/constants/color';
 import { coaches } from '@/data/coaches';
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import React from 'react';
 import {
     FlatList,
     Image,
     SafeAreaView,
-    StatusBar,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 
 // Type pour les coachs
@@ -23,9 +23,23 @@ type Coach = {
 };
 
 export default function Coach() {
+    const handleCoachPress = (coach: Coach) => {
+        router.push({
+            pathname: '/conversations',
+            params: { 
+                id: coach.id,
+                name: coach.name,
+                avatar: coach.img
+            }
+        });
+    };
+
     // Fonction pour rendre chaque carte de coach
     const renderCoachCard = ({ item }: { item: Coach }) => (
-        <TouchableOpacity style={styles.coachCard}>
+        <TouchableOpacity 
+            style={styles.coachCard}
+            onPress={() => handleCoachPress(item)}
+        >
             <Image
                 source={{ uri: item.img }}
                 style={styles.coachImage}
@@ -77,7 +91,6 @@ export default function Coach() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="dark-content" />
             
             {/* En-tête */}
             <View style={styles.header}>

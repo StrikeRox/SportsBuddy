@@ -5,6 +5,7 @@ import * as Location from 'expo-location';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     Animated,
+    Easing,
     Platform,
     SafeAreaView,
     StyleSheet,
@@ -130,16 +131,19 @@ export default function Map() {
             const data = await response.json();
             
             if (data.result) {
-                setSelectedGym(prev => prev ? {
-                    ...prev,
-                    rating: data.result.rating,
-                    openingHours: data.result.opening_hours,
-                    photos: data.result.photos?.map((photo: any) => 
-                        `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=AIzaSyDcZTBUGGEbMxW7BGibd71kEzdMVh-XO9A`
-                    ),
-                    phoneNumber: data.result.formatted_phone_number,
-                    website: data.result.website
-                } : null);
+                setSelectedGym(prev => {
+                    if (!prev) return null;
+                    return {
+                        ...prev,
+                        rating: data.result.rating,
+                        openingHours: data.result.opening_hours,
+                        photos: data.result.photos?.map((photo: any) => 
+                            `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=AIzaSyDcZTBUGGEbMxW7BGibd71kEzdMVh-XO9A`
+                        ),
+                        phoneNumber: data.result.formatted_phone_number,
+                        website: data.result.website
+                    };
+                });
             }
         } catch (error) {
             console.error('Erreur lors de la récupération des détails:', error);
@@ -147,22 +151,32 @@ export default function Map() {
     };
 
     const handleGymPress = (gym: GymLocation) => {
-        setSelectedGym(gym);
-        fetchGymDetails(gym.id);
-        Animated.spring(slideAnim, {
-            toValue: 1,
-            useNativeDriver: true,
-            tension: 50,
-            friction: 7
-        }).start();
+        // Si c'est le même gym, on ne fait rien
+        if (selectedGym?.id === gym.id) return;
+        
+        // Si un autre gym est déjà sélectionné, on met à jour les détails sans animation
+        if (selectedGym) {
+            setSelectedGym(gym);
+            fetchGymDetails(gym.id);
+        } else {
+            // Si aucun gym n'est sélectionné, on lance l'animation
+            setSelectedGym(gym);
+            fetchGymDetails(gym.id);
+            Animated.timing(slideAnim, {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: true,
+                easing: Easing.bezier(0.25, 0.1, 0.25, 1)
+            }).start();
+        }
     };
 
     const handleClose = () => {
-        Animated.spring(slideAnim, {
+        Animated.timing(slideAnim, {
             toValue: 0,
+            duration: 300,
             useNativeDriver: true,
-            tension: 50,
-            friction: 7
+            easing: Easing.bezier(0.25, 0.1, 0.25, 1)
         }).start(() => {
             setSelectedGym(null);
         });
@@ -269,9 +283,13 @@ export default function Map() {
                     transform: [{
                         translateY: slideAnim.interpolate({
                             inputRange: [0, 1],
-                            outputRange: [400, 0]
+                            outputRange: [500, 0]
                         })
-                    }]
+                    }],
+                    opacity: slideAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 1]
+                    })
                 }
             ]}>
                 <View style={styles.gymDetailsContent}>

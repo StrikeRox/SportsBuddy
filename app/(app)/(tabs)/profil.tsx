@@ -1,16 +1,16 @@
 import { colors } from '@/constants/color';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { getSports } from '@/utils/sports';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
 import {
     Image,
     ScrollView,
-    StatusBar,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 
 export default function profil() {
@@ -70,7 +70,6 @@ export default function profil() {
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="light-content" />
             <ScrollView showsVerticalScrollIndicator={false}>
                 {/* En-tête avec fond */}
                 <View style={styles.header} />
@@ -125,19 +124,7 @@ export default function profil() {
                                 (sport: string, index: number) => (
                                     <View key={index} style={styles.sportItem}>
                                         <View style={styles.sportIconContainer}>
-                                            <Ionicons
-                                                name={
-                                                    sport.toLowerCase() ===
-                                                    'boxe'
-                                                        ? ('fitness-outline' as const)
-                                                        : sport.toLowerCase() ===
-                                                          'tennis'
-                                                        ? ('tennisball-outline' as const)
-                                                        : ('basketball-outline' as const)
-                                                }
-                                                size={28}
-                                                color={colors.primary}
-                                            />
+                                            <Image source={getSports(sport)} style={styles.sportIcon} />
                                         </View>
                                         <Text style={styles.sportName}>
                                             {sport}
@@ -290,6 +277,10 @@ const styles = StyleSheet.create({
     sportName: {
         fontSize: 14,
         fontFamily: 'Onest',
+    },
+    sportIcon: {
+        width: 24,
+        height: 24,
     },
     settingItem: {
         flexDirection: 'row',
