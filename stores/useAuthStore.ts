@@ -23,7 +23,7 @@ export const useAuthStore = create<UserStore>(set => ({
                 id: 1,
                 email: credentials.email,
                 firstname: 'Anastasia',
-                bio: "J'aimerai faire de nouvelles connassances pour pouvoir pratiquer du sport en groupe",
+                bio: "J'aimerais faire de nouvelles connaissances pour pouvoir pratiquer du sport en groupe",
                 birthdate: '1995-05-27',
                 sports: ['boxe', 'tennis', 'basket'],
                 photos: ['https://images.unsplash.com/photo-1639564166502-e6b287fbb0ec?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'],
